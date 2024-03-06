@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import '../styles/Talents.css';
-import { Pagination, PaginationItem, Snackbar  } from '@mui/material';
+import { Pagination, PaginationItem, Snackbar, TextField, Drawer, List, ListItem, ListItemText} from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -10,7 +10,9 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import noData from '../assets/Online world-pana.png';
 import Alert from '@mui/material/Alert';
-import ProfilePopup from './ProfilePopup';
+import ClearIcon from '@mui/icons-material/Clear';
+import FilterListIcon from '@mui/icons-material/FilterList';
+
  
 const Talents = ({ data }) => {
     const itemsPerPage = 10; 
@@ -21,6 +23,9 @@ const Talents = ({ data }) => {
     const [loading, setLoading] = useState(false);
     const [showSnackbar, setShowSnackbar] = useState(false);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [selectedArea, setSelectedArea] = useState('');
+    const [areas, setAreas] = useState([]);
 
     const handleChange = (event, value) => {
         setPage(value);
@@ -47,6 +52,13 @@ const Talents = ({ data }) => {
         return () => clearTimeout(timer);
     }, [loading, searchTag, data]);
 
+    useEffect(() => {
+        if (data) {
+            const uniqueAreas = [...new Set(data.map(perfil => perfil.profileOccupationArea))];
+            setAreas(uniqueAreas);
+        }
+    }, [data]);
+
     const handleSearch = () => {
         setLoading(true); 
     };
@@ -66,6 +78,36 @@ const Talents = ({ data }) => {
         setLoading(true);
     };
 
+    const handleOpenPopup = () => {
+        setIsPopupOpen(true);
+    };
+
+    const handleClosePopup = () => {
+        setIsPopupOpen(false);
+    };
+
+    const handleDrawerOpen = () => {
+        setDrawerOpen(true);
+    };
+
+    const handleDrawerClose = () => {
+        setDrawerOpen(false);
+    };
+
+    const handleClearAreaFilter = () => {
+        setSelectedArea('');
+        setFilteredData(null);
+        setDrawerOpen(false);
+    };
+
+    const handleAreaSelect = (area) => {
+        setSelectedArea(area);
+        setDrawerOpen(false); // Fechar o Drawer ao selecionar uma área
+        // Filtrar os usuários com base na área selecionada
+        const filtered = data.filter(perfil => perfil.profileOccupationArea === area);
+        setFilteredData(filtered);
+    };
+
     if (!data) {
         return (
             <div style={{display:"flex", justifyContent:"center", alignItems:"center", flexDirection:"column", width:"100%", height:"100%"}}>          
@@ -80,14 +122,6 @@ const Talents = ({ data }) => {
         );
     }
 
-    const handleOpenPopup = () => {
-        setIsPopupOpen(true);
-    };
-
-    const handleClosePopup = () => {
-        setIsPopupOpen(false);
-    };
-
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
 
@@ -98,11 +132,21 @@ const Talents = ({ data }) => {
 
     return(
         <div className="main-talents">  
-            <div className="new-profile-container">
-                <Button variant="contained" color="success" onClick={handleOpenPopup}>
-                    Cadastrar meu perfil
-                </Button>
-            </div>
+            <Button 
+                onClick={handleDrawerOpen}
+                sx={{
+                    position: 'absolute',
+                    top: '2rem',
+                    transform: 'translateY(-50%)',
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: '#1565c0',
+                    fontWeight:"800"
+                }}
+            >
+                <FilterListIcon />
+            </Button>
             <div className="search-container">
                 <input
                     type="text"
@@ -134,6 +178,47 @@ const Talents = ({ data }) => {
                 </Button>
                 {loading && <CircularProgress size={20}  />}
             </div>
+            <Drawer 
+                open={drawerOpen} 
+                onClose={handleDrawerClose}
+            >
+                <List sx={{ 
+                    display:"flex", 
+                    alignItems:"center", 
+                    justifyContent:"start",
+                    flexDirection:"column",
+                    width: 300, 
+                    height:"100%", 
+                    background:"white", 
+                    color:"blue"
+                    }}>
+                    <h3 style={{color:"black", marginBottom:"1rem"}}>Areas de Atuações</h3>
+                    {areas.map((area, index) => (
+                    <ListItem 
+                        key={index} 
+                        sx={{
+                            display:"flex", 
+                            alignItems:"center", 
+                            justifyContent:"center",
+                            width:"90%",
+                            height:"8%",
+                            cursor:"pointer",
+                            border:"1px solid blue",
+                            margin:"5px",
+                            borderRadius:"5px"
+                        }} 
+                        onClick={() => handleAreaSelect(area)}
+                    >
+                            <ListItemText primary={area} />
+                            {selectedArea === area && (
+                                <Button onClick={(e) => { e.stopPropagation(); handleClearAreaFilter(); }} style={{color: 'white'}}>
+                                    <ClearIcon sx={{color:"blue"}}/>
+                                </Button>
+                            )}
+                        </ListItem>
+                    ))}
+                </List>
+            </Drawer>
             <div className="content-container">
                 <div className="column">
                     {/* Renderizando os perfis na primeira coluna */}
@@ -145,7 +230,7 @@ const Talents = ({ data }) => {
                                 sx={{ width: 78, height: 76 }}
                             />
                             <h2>{perfil.profileName}</h2>
-                            <p>{perfil.profilProfession}</p>
+                            <p>{perfil.profileProfession}</p>
                             <span title="Tag do Perfil">#{perfil.profileTag}</span>
                             <div className="profile-actions">
                                 <a href={`#details@${perfil.profileName}`}><VisibilityIcon sx={{marginRight: "0.3rem", cursor: "pointer"}}/></a>
@@ -167,7 +252,7 @@ const Talents = ({ data }) => {
                                 sx={{ width: 78, height: 76 }}
                             />
                             <h2>{perfil.profileName}</h2>
-                            <p>{perfil.profilProfession}</p>
+                            <p>{perfil.profileProfession}</p>
                             <span title="Tag do Perfil">#{perfil.profileTag}</span>
                             <div className="profile-actions">
                                 <a href={`#details@${perfil.profileName}`}><VisibilityIcon sx={{marginRight: "0.3rem", cursor: "pointer"}}/></a>
@@ -213,7 +298,6 @@ const Talents = ({ data }) => {
                     Nenhum usuário encontrado com essa tag.
                 </Alert>
             </Snackbar>
-            {isPopupOpen && <ProfilePopup open={isPopupOpen} onClose={handleClosePopup} />}
         </div>
     );
 }

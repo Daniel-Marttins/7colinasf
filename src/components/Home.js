@@ -3,6 +3,7 @@ import { fetchData } from '../api/api';
 import '../styles/Home.css';
 import Presentation from './Presentation';
 import Talents from "./Talents";
+import Profile from "./Profile";
 
 const Home = () => {
 
@@ -44,7 +45,7 @@ const Home = () => {
             {/* ---------- PROFILE SECTION ----------  */}
 
             <section className={activeSection === 2 ? "active" : ""}>
-            
+                <Profile />
             </section>
 
 
