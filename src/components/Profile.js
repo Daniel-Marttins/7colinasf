@@ -3,16 +3,18 @@ import '../styles/Profile.css';
 import { profileLogin } from '../api/api'; 
 import ManegerImage from '../assets/Computer login-rafiki.png';
 import Button from '@mui/material/Button';
-import { TextField, Avatar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { TextField, Avatar, Select, MenuItem, FormControl, InputLabel} from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
+import Divider from '@mui/joy/Divider';
 
 const Profile = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [savedProfile, setSavedProfile] = useState(null);
     const [activeTab, setActiveTab] = useState(0);
+    const [activeRegisterTab, setActiveRegisterTab] = useState(0);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [selectedImage, setSelectedImage] = useState(null);
@@ -89,6 +91,10 @@ const Profile = () => {
 
     const handleTabClick= (index) => {
         setActiveTab(index);
+    };
+
+    const handleTabRegisterClick= (index) => {
+        setActiveRegisterTab(index);
     };
     
     const handleLogin = async (event) => {
@@ -225,7 +231,238 @@ const Profile = () => {
                             />
                         </div>
                         <div className="column-input">
+                            <div className={activeRegisterTab === 0 ? "row-register-tab active" : "row-register-tab"}>
+                                <div className="row-register">
+                                    <TextField
+                                        id="filled-basic"
+                                        label="Nome"
+                                        variant="filled"
+                                        sx={{
+                                            width: "35%",
+                                            '& .MuiInputBase-input': {
+                                                color: 'white', 
+                                            },
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'white',
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: 'white',
+                                            },
+                                        }}  
+                                    />
+                                    <TextField
+                                        id="filled-basic"
+                                        label="Nascimento"
+                                        variant="filled"
+                                        sx={{
+                                            width: "20%",
+                                            '& .MuiInputBase-input': {
+                                                color: 'white', 
+                                            },
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'white',
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: 'white',
+                                            },
+                                        }}  
+                                    />
+                                    <TextField
+                                        label="Senha"
+                                        type="password"
+                                        variant="filled"
+                                        sx={{
+                                            width: "20%",
+                                            '& .MuiInputBase-input': {
+                                                color: 'white', 
+                                            },
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'white',
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: 'white',
+                                            },
+                                        }} 
+                                    />
+                                    <FormControl
+                                        sx={{
+                                            width: "20%",
+                                            '& .MuiInputBase-input': {
+                                                color: 'white', 
+                                            },
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'white',
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: 'white',
+                                            },
+                                        }}
+                                        variant="filled"
+                                    >
+                                        <InputLabel id="occupation-area-label">Genêro</InputLabel>
+                                        <Select
+                                            label="Genêro"
+                                        >
+                                            <MenuItem value="">Selecione um genêro</MenuItem>
+                                            <MenuItem value="Tecnologia da Informação">Tecnologia da Informação</MenuItem>
+                                            <MenuItem value="Saúde">Saúde</MenuItem>
+                                            <MenuItem value="Engenharia">Engenharia</MenuItem>
+                                            <MenuItem value="Educação">Educação</MenuItem>
+                                            {/* Adicione mais opções conforme necessário */}
+                                        </Select>
+                                    </FormControl>
+                                </div>
+                                <div className="row-register">
+                                    <TextField
+                                        id="filled-basic"
+                                        label="Email"
+                                        variant="filled"
+                                        sx={{
+                                            width: "40%",
+                                            '& .MuiInputBase-input': {
+                                                color: 'white', 
+                                            },
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'white',
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: 'white',
+                                            },
+                                        }}  
+                                    />
+                                    <TextField
+                                        id="filled-basic"
+                                        label="Celular"
+                                        variant="filled"
+                                        sx={{
+                                            width: "20%",
+                                            '& .MuiInputBase-input': {
+                                                color: 'white', 
+                                            },
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'white',
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: 'white',
+                                            },
+                                        }}  
+                                    />
+                                    <TextField
+                                        id="filled-basic"
+                                        label="Link Instagram"
+                                        variant="filled"
+                                        sx={{
+                                            width: "35%",
+                                            '& .MuiInputBase-input': {
+                                                color: 'white', 
+                                            },
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'white',
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: 'white',
+                                            },
+                                        }}  
+                                    />
+                                </div>
+                                <div className="row-register">
+                                    <TextField
+                                        id="filled-basic"
+                                        label="Link LinkedIn"
+                                        variant="filled"
+                                        sx={{
+                                            width: "40%",
+                                            '& .MuiInputBase-input': {
+                                                color: 'white', 
+                                            },
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'white',
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: 'white',
+                                            },
+                                        }}  
+                                    />
+                                    <FormControl
+                                        sx={{
+                                            width: "56%",
+                                            '& .MuiInputBase-input': {
+                                                color: 'white', 
+                                            },
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'white',
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: 'white',
+                                            },
+                                        }}
+                                        variant="filled"
+                                    >
+                                        <InputLabel id="occupation-area-label">Área de Atuação</InputLabel>
+                                        <Select
+                                            label="Área de Atuação"
+                                        >
+                                            <MenuItem value="">Selecione uma área</MenuItem>
+                                            <MenuItem value="Tecnologia da Informação">Tecnologia da Informação</MenuItem>
+                                            <MenuItem value="Saúde">Saúde</MenuItem>
+                                            <MenuItem value="Engenharia">Engenharia</MenuItem>
+                                            <MenuItem value="Educação">Educação</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </div>
+                                <div className="row-register">
+                                    <TextField
+                                        id="filled-basic"
+                                        label="Profissão"
+                                        variant="filled"
+                                        sx={{
+                                            width: "40%",
+                                            '& .MuiInputBase-input': {
+                                                color: 'white', 
+                                            },
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'white',
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: 'white',
+                                            },
+                                        }}  
+                                    />
+                                    <TextField
+                                        id="description"
+                                        label="Descreva seu perfil"
+                                        variant="filled"
+                                        sx={{
+                                            width: "56%",
+                                            '& .MuiInputBase-input': {
+                                                color: 'white', 
+                                            },
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'white',
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: 'white',
+                                            },
+                                        }} 
+                                    />
+                                </div>
+                            </div>
+                            <div className={activeRegisterTab === 1 ? "row-register-tab active" : "row-register-tab"}>
+                                <div className="row-register"></div>         
+                            </div>
                             
+                            <div className="columns-change-tabs">
+                                <span 
+                                    onClick={() => handleTabRegisterClick(0)}
+                                >
+                                    Dados básicos
+                                </span>
+                                <span 
+                                    onClick={() => handleTabRegisterClick(1)}
+                                >
+                                    Detalhes do Perfil
+                                </span>
+                            </div>
                         </div>
                     </form>
                 </div>
