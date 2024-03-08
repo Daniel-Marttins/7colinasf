@@ -27,10 +27,6 @@ const Talents = ({ data }) => {
     const [selectedArea, setSelectedArea] = useState('');
     const [areas, setAreas] = useState([]);
 
-    const handleChange = (event, value) => {
-        setPage(value);
-    };
-
     useEffect(() => {
         if (!loading) return;
 
@@ -58,6 +54,10 @@ const Talents = ({ data }) => {
             setAreas(uniqueAreas);
         }
     }, [data]);
+
+    const handleChange = (event, value) => {
+        setPage(value);
+    };
 
     const handleSearch = () => {
         setLoading(true); 
@@ -137,6 +137,7 @@ const Talents = ({ data }) => {
                 sx={{
                     position: 'absolute',
                     top: '2rem',
+                    left:"0",
                     transform: 'translateY(-50%)',
                     backgroundColor: 'transparent',
                     border: 'none',
@@ -226,7 +227,7 @@ const Talents = ({ data }) => {
                         <div className="card-profile" key={index}>
                             <Avatar
                                 alt={perfil.profileName}
-                                src="/static/images/avatar/1.jpg"
+                                src={perfil.profileImage}
                                 sx={{ width: 78, height: 76 }}
                             />
                             <h2>{perfil.profileName}</h2>

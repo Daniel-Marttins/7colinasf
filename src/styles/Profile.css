@@ -162,6 +162,31 @@
     height: 20%;
 }
 
+.row-register.adress {
+    display: flex;
+    align-items: start;
+    justify-content: space-evenly;
+    height: 65%;
+}
+
+.row-register-input {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 97%;
+    height: 15%;
+}
+
+.row-register-table {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 97%;
+    height: 65%;
+    overflow: auto;
+    color: white;
+}
+
 .btn-options {
     display: flex;
     align-items: center;

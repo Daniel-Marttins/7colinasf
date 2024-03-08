@@ -21,6 +21,15 @@ const Home = () => {
         getData();
     }, []);
 
+    const handleDataReload = async () => {
+        try {
+            const dataApi = await fetchData();
+            setData(dataApi);
+        } catch (error) {
+            console.error('Erro ao buscar dados da API:', error);
+        }
+    };
+
     const [activeSection, setActiveSection] = useState(0);
 
     const handleButtonClick = (index) => {
@@ -45,7 +54,7 @@ const Home = () => {
             {/* ---------- PROFILE SECTION ----------  */}
 
             <section className={activeSection === 2 ? "active" : ""}>
-                <Profile />
+                <Profile onDataReload={handleDataReload} />
             </section>
 
 
