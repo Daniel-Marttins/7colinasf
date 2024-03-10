@@ -21,7 +21,6 @@ import {
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
-import Divider from '@mui/joy/Divider';
 
 const Profile = ({ onDataReload }) => {
     const [email, setEmail] = useState('');
@@ -113,9 +112,7 @@ const Profile = ({ onDataReload }) => {
             const reader = new FileReader();
             reader.onloadend = () => {
                 setSelectedImage(reader.result);
-                // Converter a imagem para base64
-                const base64String = reader.result.split(",")[1];
-                setFormData({ ...formData, profileImage: base64String });
+                setFormData({ ...formData, profileImage: file });
             };
             reader.readAsDataURL(file);
         }
@@ -237,8 +234,7 @@ const Profile = ({ onDataReload }) => {
         setError('');
         try {
             const data = await profileLogin(email, password);
-            setSavedProfile(data);
-            localStorage.setItem('profile', JSON.stringify(data));
+            console.log(data)
         } catch (error) {
             setError('Erro ao fazer login. Verifique suas credenciais e tente novamente.');
         } finally {

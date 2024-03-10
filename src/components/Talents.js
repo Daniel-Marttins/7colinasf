@@ -227,7 +227,7 @@ const Talents = ({ data }) => {
                         <div className="card-profile" key={index}>
                             <Avatar
                                 alt={perfil.profileName}
-                                src={perfil.profileImage}
+                                src={`data:image/png;base64,${perfil.profileImage}`}
                                 sx={{ width: 78, height: 76 }}
                             />
                             <h2>{perfil.profileName}</h2>
