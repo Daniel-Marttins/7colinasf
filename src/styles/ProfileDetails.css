@@ -1,0 +1,19 @@
+.profile-details-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border: 1px solid white;
+}
+
+.profile-crud-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    position: absolute;
+    width: 30%;
+    height: 8%;
+    top: 1rem;
+    right: 1rem;
+}

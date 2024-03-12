@@ -8,6 +8,7 @@ import Profile from "./Profile";
 const Home = () => {
 
     const [data, setData] = useState(null);
+    const [activeSection, setActiveSection] = useState(0);
 
     useEffect(() => {
         const getData = async () => {
@@ -29,8 +30,6 @@ const Home = () => {
             console.error('Erro ao buscar dados da API:', error);
         }
     };
-
-    const [activeSection, setActiveSection] = useState(0);
 
     const handleButtonClick = (index) => {
         setActiveSection(index);

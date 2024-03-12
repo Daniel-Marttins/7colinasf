@@ -102,8 +102,7 @@ const Talents = ({ data }) => {
 
     const handleAreaSelect = (area) => {
         setSelectedArea(area);
-        setDrawerOpen(false); // Fechar o Drawer ao selecionar uma área
-        // Filtrar os usuários com base na área selecionada
+        setDrawerOpen(false);
         const filtered = data.filter(perfil => perfil.profileOccupationArea === area);
         setFilteredData(filtered);
     };
