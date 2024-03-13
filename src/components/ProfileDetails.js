@@ -1,58 +1,26 @@
 import React, { useState, useEffect } from "react";
 import '../styles/ProfileDetails.css';
-import { addNewProfile } from '../api/api';
 import Button from '@mui/material/Button';
 import { 
-    TextField, 
-    Avatar, 
-    Select, 
-    MenuItem, 
-    FormControl, 
-    InputLabel, 
-    Table, 
-    TableBody, 
-    TableCell, 
-    TableContainer, 
-    TableHead, 
-    TableRow, 
-    Paper
+    Avatar
 } from '@mui/material';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import IconButton from '@mui/material/IconButton';
 import ClearIcon from '@mui/icons-material/Clear';
 import ChangeCircleOutlinedIcon from '@mui/icons-material/ChangeCircleOutlined';
+import GetAppIcon from '@mui/icons-material/GetApp';
+import ProfileUpdate from "./ProfileUpdate";
 
-const ProfileDetails = ({ profile, logout }) => {
+const ProfileDetails = ({ profile, logout, updatedProfile }) => {
     const [selectedImage, setSelectedImage] = useState(null);
 
     const handleLogout = () => {
-        localStorage.removeItem('profile');
         logout(null);
     };
 
-    const [formData, setFormData] = useState({
-        profileName: "",
-        profileCreateAt: new Date().toISOString(),
-        profileStatus: "Ativo",
-        profilePassword: "",
-        profileEmail: "",
-        profilePhoneNumber: "",
-        profileInstagram: "",
-        profileLinkedin: "",
-        profileDescription: "",
-        profileProfession: "",
-        profileState: "",
-        profileCity: "",
-        profileAddress: "",
-        profileGender: "",
-        profileOccupationArea: "",
-        profileProfessionalExperiences: [],
-        profileEducations: [],
-        profileSkills: [],
+    const [formFiles, setFormFiles] = useState({
         profileImage: null,
         profileCV: null
     });
@@ -63,7 +31,7 @@ const ProfileDetails = ({ profile, logout }) => {
             const reader = new FileReader();
             reader.onloadend = () => {
                 setSelectedImage(reader.result);
-                setFormData({ ...formData, profileImage: file });
+                setFormFiles({ ...formFiles, profileImage: file });
             };
             reader.readAsDataURL(file);
         }
@@ -73,19 +41,22 @@ const ProfileDetails = ({ profile, logout }) => {
 
     const handleClearImage = () => {
         setSelectedImage(null); // Limpa a imagem selecionada
-        setFormData({ ...formData, profileImage: profile.profileImage }); // Restaura a imagem do perfil
+        setFormFiles({ ...formFiles, profileImage: profile.profileImage }); // Restaura a imagem do perfil
     };
 
+    const handleDownloadCV = () => {
+        const dataURL = `data:application/pdf;base64,${profile.profileCV}`;
+        const fileName = "curriculo.pdf";
+        const downloadLink = document.createElement("a");
+
+        downloadLink.href = dataURL;
+        downloadLink.download = fileName;
+        downloadLink.click();
+    };
 
     return(
         <div className="profile-details-main">
-            <form>
-                <div className="profile-crud-buttons">
-                    <Button onClick={handleLogout} variant="contained" color="success" sx={{marginLeft: "5px"}}>Atualizar</Button>
-                    <Button onClick={handleLogout} variant="contained" color="secondary" sx={{marginLeft: "5px"}}>Sair</Button>
-                    <Button onClick={handleLogout} variant="outlined" color="error" sx={{marginLeft: "2rem"}}>Excluir Perfil</Button>
-                </div>
-
+            <div className="form">
                 <div className="profile-show-infos">
                     <Avatar
                         alt={profile.profileName}
@@ -101,6 +72,7 @@ const ProfileDetails = ({ profile, logout }) => {
                         <IconButton
                             component="label"
                             sx={{ width: "100%", height:"20%", fontSize: "8px", marginTop: "1rem" }}
+                            title="Alterar Imagem"
                         >   
                             <ChangeCircleOutlinedIcon sx={{color:"white"}} />
                             <input
@@ -115,20 +87,33 @@ const ProfileDetails = ({ profile, logout }) => {
                          <IconButton
                             component="label"
                             sx={{ width: "100%", height:"20%", fontSize: "8px", marginTop: "1rem" }}
+                            title="Remover Imagem"
                         >   
-                            <ChangeCircleOutlinedIcon sx={{color:"white"}} />
-                            <input
-                                ref={imageInputRef}
-                                type="file"
-                                style={{ display: 'none' }}
-                                onChange={handleImageChange}
-                                accept="image/*"
-                            />
+                            <ClearIcon sx={{color:"red"}} onClick={handleClearImage}/>
                         </IconButton>
                     </div>
                     <h2>{profile.profileName}</h2>
                     <p>{profile.profileProfession}</p>
                     <span title="Tag do Perfil">#{profile.profileTag}</span>
+                    {/*BOTÃO PARA BAIXAR CV EM PDF DO PERFIL, VINDO DE (profile.profileCV) */}
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleDownloadCV}
+                        title="Baixar Curriculo"
+                        sx={{ 
+                            display: "flex",
+                            alignItems:"center",
+                            justifyContent:"center",
+                            position: "absolute",
+                            bottom: "8rem",
+                            marginTop: "1rem", 
+                            height: "8%" 
+                        }}
+                    >
+                        <GetAppIcon sx={{fontSize:"18px"}} />
+                        Baixar CV
+                    </Button>
                     <div className="profile-actions">
                         <a href={`https://api.whatsapp.com/send?phone=${profile.profilePhoneNumber}`} target="_blank" without rel="noreferrer"><WhatsAppIcon sx={{marginRight: "0.3rem", cursor: "pointer"}}/></a>
                         <a href={profile.profileInstagram} target="_blank" without rel="noreferrer"><InstagramIcon sx={{marginRight: "0.3rem", cursor: "pointer"}}/></a>
@@ -137,9 +122,9 @@ const ProfileDetails = ({ profile, logout }) => {
                 </div>
 
                 <div className="profile-form">
-                    
+                    <ProfileUpdate loggedProfile={profile} canLogout={handleLogout} setSavedProfile={updatedProfile} /> 
                 </div>
-            </form>
+            </div>
         </div>
     );
 

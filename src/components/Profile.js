@@ -5,7 +5,7 @@ import ProfileRegister from "./ProfileRegister";
 import ProfileDetails from "./ProfileDetails";
 import Button from '@mui/material/Button';
 
-const Profile = ({ onDataReload }) => {
+const Profile = ({ onDataReload, profile }) => {
     const [savedProfile, setSavedProfile] = useState(null);
     const [activeTab, setActiveTab] = useState(0);
 
@@ -44,7 +44,7 @@ const Profile = ({ onDataReload }) => {
             )}
             {savedProfile && (
                 <div className="profile-details">
-                    < ProfileDetails logout={handleLogout} profile={savedProfile} />
+                    < ProfileDetails logout={handleLogout} profile={savedProfile} updatedProfile={setSavedProfile} />
                 </div>
             )}
         </div>

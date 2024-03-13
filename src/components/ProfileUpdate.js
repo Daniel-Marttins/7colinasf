@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import '../styles/ProfileRegister.css';
+import '../styles/ProfileUpdate.css';
 import { addNewProfile } from '../api/api';
 import Button from '@mui/material/Button';
 import { 
@@ -25,14 +25,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateField } from '@mui/x-date-pickers/DateField';
 import dayjs from "dayjs";
 
-
-const ProfileRegister = ({ setTabClick, onDataReload }) => {
+const ProfileUpdate = ({ loggedProfile, canLogout, setSavedProfile }) => {
     const [activeRegisterTab, setActiveRegisterTab] = useState(0);
-    const [selectedImage, setSelectedImage] = useState(null);
-    const [selectedPDF, setSelectedPDF] = useState(null);
-    const [selectedGender, setSelectedGender] = useState("");
-    const [selectedArea, setSelectedArea] = useState("");
-    const [selectedState, setSelectedState] = useState("");
     const [newExperience, setNewExperience] = useState("");
     const [newSkill, setNewSkill] = useState("");
     const [newEducation, setNewEducation] = useState("");
@@ -47,30 +41,29 @@ const ProfileRegister = ({ setTabClick, onDataReload }) => {
     const [profileBirthday, setProfileBirthday] = useState(null);
 
     const [formData, setFormData] = useState({
-        profileName: "",
-        profileCreateAt: new Date().toISOString(),
-        profileStatus: "Ativo",
-        profilePassword: "",
-        profileEmail: "",
-        profilePhoneNumber: "",
-        profileInstagram: "",
-        profileLinkedin: "",
-        profileDescription: "",
-        profileProfession: "",
-        profileState: "",
-        profileCity: "",
-        profileAddress: "",
-        profileGender: "",
-        profileOccupationArea: "",
-        profileProfessionalExperiences: [],
-        profileEducations: [],
-        profileSkills: [],
-        profileImage: null,
-        profileCV: null
+        profileName:                        loggedProfile.profileName                           || "",
+        profileBirthday:                    loggedProfile.profileBirthday ? dayjs(loggedProfile.profileBirthday) : null,
+        profilePassword:                    loggedProfile.profilePassword                       || "",
+        profileGender:                      loggedProfile.profileGender                         || "",
+        profileEmail:                       loggedProfile.profileEmail                          || "",
+        profilePhoneNumber:                 loggedProfile.profilePhoneNumber                    || "",
+        profileInstagram:                   loggedProfile.profileInstagram                      || "",
+        profileLinkedin:                    loggedProfile.profileLinkedin                       || "",
+        profileDescription:                 loggedProfile.profileDescription                    || "",
+        profileProfession:                  loggedProfile.profileProfession                     || "",
+        profileState:                       loggedProfile.profileState                          || "",
+        profileCity:                        loggedProfile.profileCity                           || "",
+        profileAddress:                     loggedProfile.profileAddress                        || "",
+        profileOccupationArea:              loggedProfile.profileOccupationArea                 || "",
+        profileProfessionalExperiences:     loggedProfile.profileProfessionalExperiences        || [].join(','),
+        profileEducations:                  loggedProfile.profileEducations                     || [].join(','),
+        profileSkills:                      loggedProfile.profileSkills                         || [].join(','),
+        profileImage:                       loggedProfile.profileImage                          || null,
+        profileCV:                          loggedProfile.profileCV                             || null
     });
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
         if (name === "newExperience") {
             setNewExperience(value);
         } else if (name === "newSkill") {
@@ -89,42 +82,15 @@ const ProfileRegister = ({ setTabClick, onDataReload }) => {
     };
 
     const handleGenderChange = (event) => {
-        setSelectedGender(event.target.value);
         setFormData({ ...formData, profileGender: event.target.value });
     };
 
     const handleAreaChange = (event) => {
-        setSelectedArea(event.target.value);
         setFormData({ ...formData, profileOccupationArea: event.target.value });
     };
 
     const handleStateChange = (event) => {
-        setSelectedState(event.target.value);
         setFormData({ ...formData, profileState: event.target.value });
-    };
-
-    const handleImageChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setSelectedImage(reader.result);
-                setFormData({ ...formData, profileImage: file });
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    const handlePDFChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            setSelectedPDF(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setFormData({ ...formData, profileCV: file });
-            };
-            reader.readAsDataURL(file);
-        }
     };
 
     const handleAddExperience = () => {
@@ -184,148 +150,35 @@ const ProfileRegister = ({ setTabClick, onDataReload }) => {
         });
     };
 
-    const handleRegister = async(event) => {
-        event.preventDefault();
-        
-        try {
-            const data = {
-                profileName: formData.profileName,
-                profileBirthday: profileBirthday,
-                profileCreateAt: formData.profileCreateAt,
-                profileStatus: formData.profileStatus,
-                profilePassword: formData.profilePassword,
-                profileEmail: formData.profileEmail,
-                profilePhoneNumber: formData.profilePhoneNumber,
-                profileInstagram: formData.profileInstagram,
-                profileLinkedin: formData.profileLinkedin,
-                profileDescription: formData.profileDescription,
-                profileProfession: formData.profileProfession,
-                profileState: formData.profileState,
-                profileCity: formData.profileCity,
-                profileAddress: formData.profileAddress,
-                profileGender: formData.profileGender,
-                profileOccupationArea: formData.profileOccupationArea,
-                profileProfessionalExperiences: formData.profileProfessionalExperiences.join(','),
-                profileEducations: formData.profileEducations.join(','),
-                profileSkills: formData.profileSkills.join(','),
-                profileImage: formData.profileImage,
-                profileCV: formData.profileCV
-            }
-
-            const response = await addNewProfile(data);
-            setFormData({ 
-                profileName: "",
-                profilePassword: "",
-                profileEmail: "",
-                profilePhoneNumber: "",
-                profileInstagram: "",
-                profileLinkedin: "",
-                profileDescription: "",
-                profileProfession: "",
-                profileState: "",
-                profileCity: "",
-                profileAddress: "",
-                profileGender: "",
-                profileOccupationArea: "",
-                profileProfessionalExperiences: [],
-                profileEducations: [],
-                profileSkills: [],
-                profileImage: null,
-                profileCV: null
-            });
-            setProfileBirthday(null);
-            setSelectedArea("");
-            setSelectedGender("");
-            setSelectedState("");
-            onDataReload();
-            setShowSuccessSnackbar('Perfil Cadastrado com Sucesso!');
-            setTimeout(() => {
-                setTabClick(0);
-            }, 700);
-        } catch (error) {
-            setShowErrorSnackbar("Erro ao realizar a solicitação. Tente novamente mais tarde");
-        }
-    };
-
-    const canSubmit = formData.profileName.trim() !== "" &&
-                      formData.profileEmail.trim() !== "" &&
-                      formData.profilePassword.trim() !== "" &&
-                      formData.profileGender.trim() !== "" &&
-                      formData.profilePhoneNumber.trim() !== "" &&
-                      formData.profileInstagram.trim() !== "" &&
-                      formData.profileLinkedin.trim() !== "" &&
-                      formData.profileOccupationArea.trim() !== "" &&
-                      formData.profileProfession.trim() !== "" &&
-                      formData.profileDescription.trim() !== "";
-
-
     const handleTabRegisterClick= (index) => {
         setActiveRegisterTab(index);
     };
 
+    const handleUpdate = async(event) => {
+        event.preventDefault();
+    }
+
     const handleCloseSuccessSnackbar = () => {
         setShowSuccessSnackbar('');
-      };
+    };
     
     const handleCloseErrorSnackbar = () => {
         setShowErrorSnackbar('');
     };
 
-    const imageInputRef = React.createRef();
-    const pdfInputRef = React.createRef();
-
-    const handleImageButtonClick = () => {
-        imageInputRef.current.click();
-    };
-
-    const handlePDFButtonClick = () => {
-        pdfInputRef.current.click();
-    };
-
-    const handleTabClick= (index) => {
-        setTabClick(index);
+    const handleLogout = () => {
+        canLogout();
     };
 
     return(
-        <div className="profile-register-main">
-            <h2 className="register-text">Vamos realizar seu cadastro</h2>
-            <div className="btn-tab back active" onClick={() => handleTabClick(0)}>
-                <Button variant="outlined" color="error">Voltar</Button>
-            </div>
-            <form onSubmit={handleRegister} method="post">
-                <div className="column-image">
-                    <Avatar 
-                        src={selectedImage || "/static/images/avatar/1.jpg"} 
-                        sx={{
-                            width: 120,
-                            height: 120,
-                            objectFit: 'contain'
-                        }}
-                    />
-                    <Button variant="contained" sx={{width:"70%", fontSize:"8px", marginTop:"1rem"}} onClick={handleImageButtonClick}>
-                        Selecionar Imagem
-                    </Button>
-                    <input
-                        ref={imageInputRef}
-                        type="file"
-                        style={{ display: 'none' }}
-                        onChange={handleImageChange}
-                        accept="image/*"
-                    />
-                    {selectedPDF && (
-                        <h5 style={{color:"white"}}>{selectedPDF.name}</h5>
-                    )}
-                    <Button variant="contained" sx={{width:"70%", fontSize:"8px", marginTop:"1rem"}} onClick={handlePDFButtonClick}>
-                        Selecionar PDF
-                    </Button>
-                    <input
-                        ref={pdfInputRef}
-                        type="file"
-                        style={{ display: 'none' }}
-                        onChange={handlePDFChange}
-                        accept=".pdf"
-                    />
+        <div className="profile-update-main">
+            <form onSubmit={handleUpdate} method="post">
+                <div className="profile-crud-buttons">
+                    <Button type="submit" variant="contained" color="success" sx={{marginLeft: "5px"}}>Atualizar</Button>
+                    <Button onClick={handleLogout} variant="contained" color="secondary" sx={{marginLeft: "5px"}}>Sair</Button>
+                    <Button onClick={""} variant="outlined" color="error" sx={{marginLeft: "2rem"}}>Excluir Perfil</Button>
                 </div>
+
                 <div className="column-input">
                     <div className={activeRegisterTab === 0 ? "row-register-tab active" : "row-register-tab"}>
                         <div className="row-register">
@@ -338,9 +191,9 @@ const ProfileRegister = ({ setTabClick, onDataReload }) => {
                                 onChange={handleInputChange}
                                 variant="filled"
                                 sx={{
-                                    width: "35%",
+                                    width: "55%",
                                     '& .MuiInputBase-input': {
-                                        color: 'white', 
+                                        color: 'white',
                                     },
                                     '& .MuiOutlinedInput-notchedOutline': {
                                         borderColor: 'white',
@@ -348,7 +201,7 @@ const ProfileRegister = ({ setTabClick, onDataReload }) => {
                                     '& .MuiInputLabel-root': {
                                         color: 'white',
                                     },
-                                }}  
+                                }}
                             />
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DemoContainer 
@@ -385,26 +238,6 @@ const ProfileRegister = ({ setTabClick, onDataReload }) => {
                                     />
                                 </DemoContainer>
                             </LocalizationProvider>
-                            <TextField
-                                label="Senha *"
-                                type="password"
-                                name="profilePassword"
-                                value={formData.profilePassword}
-                                onChange={handleInputChange}
-                                variant="filled"
-                                sx={{
-                                    width: "20%",
-                                    '& .MuiInputBase-input': {
-                                        color: 'white', 
-                                    },
-                                    '& .MuiOutlinedInput-notchedOutline': {
-                                        borderColor: 'white',
-                                    },
-                                    '& .MuiInputLabel-root': {
-                                        color: 'white',
-                                    },
-                                }} 
-                            />
                             <FormControl
                                 sx={{
                                     width: "20%",
@@ -424,7 +257,7 @@ const ProfileRegister = ({ setTabClick, onDataReload }) => {
                                 <Select
                                     label="Sexo"
                                     labelId="gender-label"
-                                    value={selectedGender}
+                                    value={formData.profileGender}
                                     onChange={handleGenderChange}
                                 >
                                     <MenuItem value="">Sexo</MenuItem>
@@ -535,7 +368,7 @@ const ProfileRegister = ({ setTabClick, onDataReload }) => {
                                 <Select
                                     label="Área de Atuação"
                                     labelId="gender-label"
-                                    value={selectedArea}
+                                    value={formData.profileOccupationArea}
                                     onChange={handleAreaChange}
                                 >
                                     <MenuItem value="">Selecione uma área</MenuItem>
@@ -588,102 +421,104 @@ const ProfileRegister = ({ setTabClick, onDataReload }) => {
                                 }} 
                             />
                         </div>
+                        <div className="row-register"></div>
                     </div>
-                    <div className={activeRegisterTab === 1 ? "row-register-tab active" : "row-register-tab"}>
-                        <div className="row-register-input">
-                            <TextField
-                                id="filled-basic"
-                                label="Experiência"
-                                variant="filled"
-                                size="small"
-                                name="newExperience"
-                                value={newExperience}
-                                onChange={handleInputChange}
-                                autoComplete="off"
-                                sx={{
-                                    width: "75%",
-                                    height: "70%",
-                                    marginRight:"1rem",
-                                    '& .MuiInputBase-input': {
-                                        color: 'white', 
-                                    },
-                                    '& .MuiOutlinedInput-notchedOutline': {
-                                        borderColor: 'white',
-                                    },
-                                    '& .MuiInputLabel-root': {
-                                        color: 'white',
-                                    },
-                                }}  
-                            />
-                            <Button 
-                                variant="contained" 
-                                color="success" 
-                                sx={{height:"60%", width:"20%"}}
-                                onClick={handleAddExperience}
-                            >
-                                Adicionar
-                            </Button>
-                        </div>  
+                </div>
+                <div className={activeRegisterTab === 1 ? "row-register-tab active" : "row-register-tab"}>
+                    <div className="row-register-input">
+                        <TextField
+                            id="filled-basic"
+                            label="Experiência"
+                            variant="filled"
+                            size="small"
+                            name="newExperience"
+                            value={newExperience}
+                            onChange={handleInputChange}
+                            autoComplete="off"
+                            sx={{
+                                width: "75%",
+                                height: "70%",
+                                marginRight:"1rem",
+                                '& .MuiInputBase-input': {
+                                    color: 'white', 
+                                },
+                                '& .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: 'white',
+                                },
+                                '& .MuiInputLabel-root': {
+                                    color: 'white',
+                                },
+                            }}  
+                        />
+                        <Button 
+                            variant="contained" 
+                            color="success" 
+                            sx={{height:"55%", width:"20%"}}
+                            onClick={handleAddExperience}
+                        >
+                            Adicionar
+                        </Button>
+                    </div>  
                         <div className="row-register-table">
-                            <TableContainer 
-                                component={Paper} 
-                                style={{ 
-                                    width:"97%",
-                                    height: "100%", 
-                                    borderRadius:"0", 
-                                    overflow:"auto", 
-                                    backgroundColor:"transparent" 
-                                }}
-                            >
-                                <Table sx={{ width:"100%" }} size="small" aria-label="a dense table">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell 
+                        <TableContainer 
+                            component={Paper} 
+                            style={{ 
+                                width:"97%",
+                                height: "100%", 
+                                borderRadius:"0", 
+                                overflow:"auto", 
+                                backgroundColor:"transparent"
+                            }}
+                        >
+                            <Table sx={{ width:"100%", border: "none"}} size="small" aria-label="a dense table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell 
+                                            sx={{
+                                                width:"80%",
+                                                color:"white",
+                                                fontWeight:"600"
+                                            }}
+                                        >
+                                            Descrição
+                                        </TableCell>
+                                        <TableCell 
+                                            sx={{
+                                                width:"20%",
+                                                color:"white",
+                                                fontWeight:"600"
+                                            }}>
+                                                Ação
+                                        </TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {formData.profileProfessionalExperiences.map((experience, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell
                                                 sx={{
-                                                    width:"80%",
-                                                    color:"white",
-                                                    fontWeight:"600"
+                                                    color:"turquoise",
                                                 }}
                                             >
-                                                Descrição
+                                                {experience}
                                             </TableCell>
-                                            <TableCell 
-                                                sx={{
-                                                    width:"20%",
-                                                    color:"white",
-                                                    fontWeight:"600"
-                                                }}>
-                                                    Ação
+                                            <TableCell>
+                                                <Button
+                                                    variant="outlined"
+                                                    color="error"
+                                                    onClick={() => handleRemoveExperience(index)}
+                                                >
+                                                    Remover
+                                                </Button>
                                             </TableCell>
                                         </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {formData.profileProfessionalExperiences.map((experience, index) => (
-                                            <TableRow key={index}>
-                                                <TableCell
-                                                    sx={{
-                                                        color:"turquoise",
-                                                    }}
-                                                >
-                                                    {experience}
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Button
-                                                        variant="outlined"
-                                                        color="error"
-                                                        onClick={() => handleRemoveExperience(index)}
-                                                    >
-                                                        Remover
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </div>       
-                    </div>
-                    <div className={activeRegisterTab === 2 ? "row-register-tab active" : "row-register-tab"}>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </div>       
+                </div>
+                <div className={activeRegisterTab === 2 ? "row-register-tab active" : "row-register-tab"}>
                         <div className="row-register-input">
                             <TextField
                                 id="filled-basic"
@@ -712,7 +547,7 @@ const ProfileRegister = ({ setTabClick, onDataReload }) => {
                             <Button 
                                 variant="contained" 
                                 color="success" 
-                                sx={{height:"60%", width:"20%"}}
+                                sx={{height:"50%", width:"20%"}}
                                 onClick={handleAddSkill}
                             >
                                 Adicionar
@@ -776,9 +611,9 @@ const ProfileRegister = ({ setTabClick, onDataReload }) => {
                                 </Table>
                             </TableContainer>
                         </div>       
-                    </div>
-                    <div className={activeRegisterTab === 3 ? "row-register-tab active" : "row-register-tab"}>
-                        <div className="row-register-input">
+                </div>
+                <div className={activeRegisterTab === 3 ? "row-register-tab active" : "row-register-tab"}>
+                    <div className="row-register-input">
                             <TextField
                                 id="filled-basic"
                                 label="Educação"
@@ -870,9 +705,9 @@ const ProfileRegister = ({ setTabClick, onDataReload }) => {
                                 </Table>
                             </TableContainer>
                         </div>       
-                    </div>
-                    <div className={activeRegisterTab === 4 ? "row-register-tab active" : "row-register-tab"}>
-                        <div className="row-register adress">
+                </div>
+                <div className={activeRegisterTab === 4 ? "row-register-tab active" : "row-register-tab"}>
+                    <div className="row-register adress">
                         <FormControl
                                 sx={{
                                     width: "20%",
@@ -892,7 +727,7 @@ const ProfileRegister = ({ setTabClick, onDataReload }) => {
                                 <Select
                                     label="Estado"
                                     labelId="state-label"
-                                    value={selectedState}
+                                    value={formData.profileState}
                                     onChange={handleStateChange}
                                 >
                                     <MenuItem value="">Selecione seu Estado</MenuItem>
@@ -942,9 +777,9 @@ const ProfileRegister = ({ setTabClick, onDataReload }) => {
                                 }}  
                             />
                         </div>
-                    </div>
-                    {/*MUDAR TABS - CHANGE TABS */}
-                    <div className="columns-change-tabs">
+                </div>
+
+                <div className="columns-change-tabs">
                         <span 
                             onClick={() => handleTabRegisterClick(0)}
                         >
@@ -970,23 +805,7 @@ const ProfileRegister = ({ setTabClick, onDataReload }) => {
                         >
                             Endereços
                         </span>
-                    </div>
                 </div>
-                {canSubmit && (
-                    <Button     
-                    variant="contained"
-                    type="submit"
-                    color="success" 
-                    sx={{ 
-                        width:"10%",
-                        position:"absolute",
-                        right: "12rem",
-                        top:"1.4rem"
-                    }}
-                    >
-                        Cadastrar
-                    </Button>
-                )}
             </form>
             <Snackbar open={!!showSuccessSnackbar} autoHideDuration={6000} onClose={handleCloseSuccessSnackbar}>
                 <MuiAlert elevation={6} variant="filled" onClose={handleCloseSuccessSnackbar} severity="success">
@@ -1004,4 +823,4 @@ const ProfileRegister = ({ setTabClick, onDataReload }) => {
 
 }
 
-export default ProfileRegister;
+export default ProfileUpdate;
