@@ -3,18 +3,15 @@ import '../styles/Profile.css';
 import ProfileLogin from "./ProfileLogin";
 import ProfileRegister from "./ProfileRegister";
 import ProfileDetails from "./ProfileDetails";
-import Button from '@mui/material/Button';
+import { loadLoggedUser, clearLoggedUser } from "./userUtils";
 
-const Profile = ({ onDataReload, profile }) => {
-    const [savedProfile, setSavedProfile] = useState(null);
+const Profile = ({ onDataReload }) => {
+    const [loggedUser, setLoggedUser] = useState(null);
     const [activeTab, setActiveTab] = useState(0);
 
     useEffect(() => {
-        const savedProfileString = localStorage.getItem('profile');
-        if (savedProfileString) {
-            const savedProfile = JSON.parse(savedProfileString);
-            setSavedProfile(savedProfile);
-        }
+        const profile = loadLoggedUser();
+        setLoggedUser(profile);
     }, []);
 
     const handleTabClick= (index) => {
@@ -27,24 +24,25 @@ const Profile = ({ onDataReload, profile }) => {
     };
 
     const handleLogout = () => {
-        setSavedProfile(null);
+        clearLoggedUser(); 
+        setLoggedUser(null);
     };
 
     return (
         <div className="main-profile">
-            {!savedProfile && (
+            {!loggedUser && (
                 <>
                 <div className={activeTab === 0 ? "profile-presentation show-options active" : "profile-presentation"}>
-                    <ProfileLogin setSavedProfile={setSavedProfile} setTabClick={handleTabClick} />
+                    <ProfileLogin setSavedProfile={setLoggedUser} setTabClick={handleTabClick} />
                 </div>
                 <div className={activeTab === 1 ? "profile-presentation active" : "profile-presentation"}>
                     <ProfileRegister setTabClick={handleTabClick} onDataReload={onDataReload} />
                 </div>
                 </>
             )}
-            {savedProfile && (
+            {loggedUser && (
                 <div className="profile-details">
-                    < ProfileDetails logout={handleLogout} profile={savedProfile} updatedProfile={setSavedProfile} />
+                    < ProfileDetails logout={handleLogout} loggedProfile={loggedUser} />
                 </div>
             )}
         </div>
